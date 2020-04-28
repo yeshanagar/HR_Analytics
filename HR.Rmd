@@ -1,0 +1,179 @@
+---
+title: "HR Analytics"
+author: "Yesha Nagar"
+date: "4/28/2020"
+output: pdf_document
+---
+
+1. Data Description
+```{r}
+hr.df<- read.csv(paste("/Users/yeshanagar/Downloads/HR_comma_sep.csv", sep = ""))
+
+dim(hr.df)
+
+library(psych)
+describe(hr.df)
+```
+
+2. Creating contingency table for each variable in the dataset
+
+```{r}
+mytable<-with(hr.df,table(salary))
+mytable
+
+mytable1<-with(hr.df,table(satisfaction_level))
+mytable1
+
+mytable2<-with(hr.df,table(last_evaluation))
+mytable2
+
+mytable3<-with(hr.df,table(number_project))
+mytable3
+
+mytable4<-with(hr.df,table(average_montly_hours))
+mytable4
+
+mytable5<-with(hr.df,table(time_spend_company))
+mytable5
+
+mytable6<-with(hr.df,table(Work_accident))
+mytable6
+
+mytable7<-with(hr.df,table(left))
+mytable7
+
+mytable8<-with(hr.df,table(promotion_last_5years))
+mytable8
+
+mytable9<-with(hr.df,table(Department))
+mytable9
+
+mytable10<-with(hr.df,table(salary))
+mytable10
+```
+
+3. Creating two-way contingency variables for categorical variables 
+
+```{r}
+mytable11<-xtabs(~number_project+time_spend_company,data=hr.df)
+mytable11
+
+mytable12<-xtabs(~satisfaction_level+salary,data=hr.df)
+mytable12
+
+mytable13<-xtabs(~Department+salary,data=hr.df)
+mytable13
+
+mytable14<-xtabs(~average_montly_hours+salary,data=hr.df)
+mytable14
+
+mytable15<-xtabs(~Work_accident+salary,data=hr.df)
+mytable15
+
+mytable16<-xtabs(~promotion_last_5years+salary,data=hr.df)
+mytable16
+
+mytable17<-xtabs(~number_project+time_spend_company,data=hr.df)
+mytable17
+
+```
+
+4.  Box Plot
+
+```{r}
+boxplot(satisfaction_level ~salary,data=hr.df, horizontal=TRUE,
+           ylab="Salary Level", xlab="Satisfaction level", las=1,
+           main="Analysis of Salary of Employee on the basis of their satisfaction level",
+           col=c("thistle","turquoise4","yellowgreen")
+           )
+boxplot(satisfaction_level ~left, data=hr.df, horizontal=TRUE,
+           ylab="Left", xlab="Satisfaction level", las=1,
+           main="Analysis of Employee Left on the basis of their satisfaction level",
+           col=c("seagreen3","rosybrown")
+           )
+boxplot(number_project~left,data=hr.df, horizontal=TRUE,
+           ylab="Left", xlab="No of Projects", las=1,
+           main="Analysis of of Employee Left on the basis of their Number of Projects",
+           col=c("palevioletred","paleturquoise3")
+           )
+boxplot(average_montly_hours ~left, data=hr.df,horizontal=TRUE,
+           ylab="Left", xlab="Average Monthly Hours", las=1,
+           main="Analysis of of Employee Left on the basis of their Average Monthly Hours",
+           col=c("plum","pink4")
+           )
+boxplot(Work_accident~left,data=hr.df, horizontal=TRUE,
+           ylab="Left", xlab="Work Accident", las=1,
+           main="Analysis of of Employee Left on the basis of their Work Accident",
+           col=c("yellow","red")
+           )
+boxplot(last_evaluation ~left,data=hr.df, horizontal=TRUE,
+           ylab="Left", xlab="Last Evaluation", las=1,
+           main="Analysis of of Employee Left on the basis of their Last Evaluation",
+           col=c("mediumorchid","salmon")
+           )
+```
+
+5. Plots for each attribute
+
+```{r}
+hist(hr.df$satisfaction_level, main=" Variation in Satisfaction Level ", xlab="Satisfaction Level",breaks=10,ylab="Frequency", col="aquamarine3")
+
+hist(hr.df$last_evaluation, main=" Variation in Last Evaluation ", xlab="Last Evaluation",breaks=10,ylab="Frequency", col="cadetblue")
+
+hist(hr.df$satisfaction_level, main=" Variation in Time Spent in the Company ", xlab="Time Spent in the Company",breaks=10,ylab="Frequency", col="chartreuse4")
+
+hist(hr.df$average_montly_hours, main=" Variation in Average Monthly Hours ", xlab="Average Monthly Hours",breaks=10,ylab="Frequency", col="cyan4")
+
+plot(y=hr.df$salary, x=hr.df$Department,
+     col="darkkhaki",
+     main="Relationship Between Salary and Department",
+     ylab="Salary", xlab="Department")
+
+plot(y=hr.df$average_montly_hours, x=hr.df$Department,
+     col="darkorchid3",
+     main="Relationship Between Average Monthly Hours and Department",
+     ylab="Average Monthly Hours", xlab="Department")
+```
+
+6. Determining Correlation
+
+```{r}
+library(corrplot)
+correlationMatrix <- cor(hr.df[,c(1:8)])
+corrplot(correlationMatrix, method="circle")
+cor(hr.df[ ,c(1,2,3,4,5,6,7,8)])
+
+library(corrgram)
+corrgram(hr.df, lower.panel = panel.shade, upper.panel = panel.pie, text.panel = panel.txt, main = "Corrgram of all  variables")
+```
+
+7. Creating Scatter-Plots
+
+```{r}
+library(car)
+scatterplotMatrix(formula = ~left + satisfaction_level + time_spend_company + Work_accident +average_montly_hours , data = hr.df,smooth= TRUE)
+```
+
+8. Performing Hypothesis testing based on assumptions and appropriate tests
+
+```{r}
+cor.test(hr.df$left,hr.df$satisfaction_level)
+
+cor.test(hr.df$left,hr.df$time_spend_company)
+
+cor.test(hr.df$left,hr.df$average_montly_hours)
+
+cor.test(hr.df$left,hr.df$last_evaluation)
+
+cor.test(hr.df$left,hr.df$number_project)
+
+t.test(hr.df$satisfaction_level~hr.df$left)
+
+t.test(hr.df$time_spend_company~hr.df$left)
+
+t.test(hr.df$average_montly_hours~hr.df$left)
+
+t.test(hr.df$last_evaluation~hr.df$left)
+
+```
+
